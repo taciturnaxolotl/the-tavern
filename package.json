@@ -1,6 +1,6 @@
 {
-    "name": "slackbot-ultimate-template",
-    "version": "0.1.2",
+    "name": "the-tavern",
+    "version": "0.1.0",
     "module": "index.ts",
     "type": "module",
     "scripts": {
@@ -9,17 +9,17 @@
     },
     "devDependencies": {
         "@types/bun": "latest",
-        "prisma": "^5.16.1"
+        "prisma": "^5.18.0"
     },
     "peerDependencies": {
         "typescript": "^5.0.0"
     },
     "dependencies": {
-        "@prisma/client": "^5.16.1",
+        "@prisma/client": "^5.18.0",
         "bottleneck": "^2.19.5",
         "colors": "^1.4.0",
-        "slack-edge": "^0.13.3",
-        "yaml": "^2.4.5"
+        "slack-edge": "^1.0.0",
+        "yaml": "^2.5.0"
     },
     "prettier": {
         "trailingComma": "es5",
