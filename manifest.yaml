@@ -1,8 +1,8 @@
 display_information:
     name: The Tavern
-    description: "Bag's very own tavern manned by a gossipy proprietor and brimming with adventure"
+    description: Bag's very own tavern manned by a gossipy proprietor and brimming with adventure
     background_color: '#e2c51f'
-    long_description: 'This tavern has been around for many years and faithfully servers the resisdents of hackclub land all the finest quests and gossip. Home of the famous boba ale and greedy grouch it is the best place to !relaxe and enjoy !delicous food.'
+    long_description: This tavern has been around for many years and faithfully servers the resisdents of hackclub land all the finest quests and gossip. Home of the famous boba ale and greedy grouch it is the best place to !relaxe and enjoy !delicous food.
 features:
     app_home:
         home_tab_enabled: true
@@ -20,11 +20,13 @@ oauth_config:
             - links:write
             - users.profile:read
             - users:read
+            - app_mentions:read
 settings:
     event_subscriptions:
         request_url: https://casual-renewing-reptile.ngrok-free.app/slack
         bot_events:
             - app_home_opened
+            - app_mention
     interactivity:
         is_enabled: true
         request_url: https://casual-renewing-reptile.ngrok-free.app/slack
