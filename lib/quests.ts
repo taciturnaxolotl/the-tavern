@@ -2,6 +2,7 @@ import type {
     AppMentionEvent,
     ChatPostMessageRequest,
     ChatPostMessageResponse,
+    GenericMessageEvent,
 } from 'slack-edge'
 import { slackClient, openAIClient } from '..'
 
@@ -9,7 +10,7 @@ export async function respond(
     say: (
         params: Omit<ChatPostMessageRequest, 'channel'>
     ) => Promise<ChatPostMessageResponse>,
-    appMentionEvent?: AppMentionEvent
+    appMentionEvent: AppMentionEvent | GenericMessageEvent
 ) {
     const initalMesssage = await say({
         thread_ts: appMentionEvent?.ts,
