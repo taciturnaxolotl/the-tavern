@@ -17,7 +17,9 @@ const reloadHandler = async () => {
             process.env.ADMINS?.split(',').includes(user.user?.id!)
         ) {
             clog(
-                `User <@${user.user!.id}> is authorized to reload the settings page.`,
+                `User <@${
+                    user.user!.id
+                }> is authorized to reload the settings page.`,
                 'info'
             )
 
@@ -32,7 +34,9 @@ const reloadHandler = async () => {
             return
         } else {
             blog(
-                `User <@${user.user!.id}> is not authorized to reload the settings page.`,
+                `User <@${
+                    user.user!.id
+                }> is not authorized to reload the settings page.`,
                 'error'
             )
             // update the home tab

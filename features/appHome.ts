@@ -1,7 +1,7 @@
 import { name, slackApp, prisma } from '../index'
 
 import { blog, clog } from '../lib/Logger'
-import barChartGenerator from "../lib/barChart"
+import barChartGenerator from '../lib/barChart'
 
 import type { AnyHomeTabBlock } from 'slack-edge'
 
@@ -18,7 +18,7 @@ const appHome = async () => {
             user: payload.user,
         })
 
-        const day = new Date().toISOString().split("T")[0] + "T00:00:00.000Z";
+        const day = new Date().toISOString().split('T')[0] + 'T00:00:00.000Z'
 
         // check if the user is authorized
         if (
@@ -27,7 +27,9 @@ const appHome = async () => {
             process.env.ADMINS?.split(',').includes(user.user?.id!)
         ) {
             clog(
-                `User <@${user.user!.id}> is authorized to access the analytics page.`,
+                `User <@${
+                    user.user!.id
+                }> is authorized to access the analytics page.`,
                 'info'
             )
 
@@ -58,7 +60,9 @@ const appHome = async () => {
             return
         } else {
             blog(
-                `User <@${user.user!.id}> is not authorized to access the analytics page.`,
+                `User <@${
+                    user.user!.id
+                }> is not authorized to access the analytics page.`,
                 'error'
             )
 
@@ -123,7 +127,9 @@ export async function getSettingsMenuBlocks(
         ]
     }
 
-    const analytics = (await prisma.analytics.findMany()).sort((a, b) => b.date.toString().localeCompare(a.date.toString()))
+    const analytics = (await prisma.analytics.findMany()).sort((a, b) =>
+        b.date.toString().localeCompare(a.date.toString())
+    )
 
     // update the home tab
     return [
@@ -138,27 +144,41 @@ export async function getSettingsMenuBlocks(
             type: 'divider',
         },
         {
-            type: "section",
+            type: 'section',
             text: {
-                type: "mrkdwn",
+                type: 'mrkdwn',
                 text: `Authorized App Home Opens over the last 5 days: ${await barChartGenerator(
-                    analytics.slice(0, 5).map((analytics) => analytics.dashboardOpensAuthorized!), 5,
-                    analytics.slice(0, 5).map((analytics) => new Date(analytics.date).toLocaleDateString("en-US", {
-                        weekday: "short",
-                    })),
-                )}`
+                    analytics
+                        .slice(0, 5)
+                        .map(
+                            (analytics) => analytics.dashboardOpensAuthorized!
+                        ),
+                    5,
+                    analytics.slice(0, 5).map((analytics) =>
+                        new Date(analytics.date).toLocaleDateString('en-US', {
+                            weekday: 'short',
+                        })
+                    )
+                )}`,
             },
         },
         {
-            type: "section",
+            type: 'section',
             text: {
-                type: "mrkdwn",
+                type: 'mrkdwn',
                 text: `Unauthorized App Home Opens over the last 5 days: ${await barChartGenerator(
-                    analytics.slice(0, 5).map((analytics) => analytics.dashboardOpensUnauthorized!), 5,
-                    analytics.slice(0, 5).map((analytics) => new Date(analytics.date).toLocaleDateString("en-US", {
-                        weekday: "short",
-                    })),
-                )}`
+                    analytics
+                        .slice(0, 5)
+                        .map(
+                            (analytics) => analytics.dashboardOpensUnauthorized!
+                        ),
+                    5,
+                    analytics.slice(0, 5).map((analytics) =>
+                        new Date(analytics.date).toLocaleDateString('en-US', {
+                            weekday: 'short',
+                        })
+                    )
+                )}`,
             },
         },
         {
