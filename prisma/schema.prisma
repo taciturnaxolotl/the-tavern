@@ -16,3 +16,10 @@ model Analytics {
   dashboardOpensAuthorized   Int      @default(0)
   dashboardOpensUnauthorized Int      @default(0)
 }
+
+model Threads {
+  id      String @id @default(uuid())
+  ts      String
+  channel String
+  userID  String
+}
