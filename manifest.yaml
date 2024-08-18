@@ -1,16 +1,16 @@
 display_information:
-    name: Ultimate Slackbot
-    description: The ultimate slackbot template
-    background_color: '#203020'
-    long_description: They call me bot; ultimate slackbot; I am the ultimate template for your every slackbot need. This field is required to be more than 174 characters which this extra filler text accomplishes
+    name: The Tavern
+    description: "Bag's very own tavern manned by a gossipy proprietor and brimming with adventure"
+    background_color: '#e2c51f'
+    long_description: 'This tavern has been around for many years and faithfully servers the resisdents of hackclub land all the finest quests and gossip. Home of the famous boba ale and greedy grouch it is the best place to !relaxe and enjoy !delicous food.'
 features:
     app_home:
         home_tab_enabled: true
         messages_tab_enabled: false
         messages_tab_read_only_enabled: true
     bot_user:
-        display_name: Ultimate Slackbot
-        always_online: false
+        display_name: The Tavern
+        always_online: true
 oauth_config:
     scopes:
         bot:
