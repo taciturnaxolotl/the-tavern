@@ -6,6 +6,7 @@ import * as features from './features/index'
 
 import { t } from './lib/template'
 import { blog } from './lib/Logger'
+import OpenAI from 'openai'
 const { version, name } = require('./package.json')
 const environment = process.env.NODE_ENV
 
@@ -15,6 +16,8 @@ console.log(
 console.log(`🏗️  Starting ${name}...`)
 console.log('📦 Loading Slack App...')
 console.log('🔑 Loading environment variables...')
+
+const openAIClient = new OpenAI()
 
 const slackApp = new SlackApp({
     env: {
@@ -73,4 +76,12 @@ blog(
 )
 console.log('\n----------------------------------\n')
 
-export { slackApp, slackClient, version, name, environment, prisma }
+export {
+    slackApp,
+    slackClient,
+    openAIClient,
+    version,
+    name,
+    environment,
+    prisma,
+}
