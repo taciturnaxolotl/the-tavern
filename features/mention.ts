@@ -12,7 +12,7 @@ const mention = async () => {
             return
 
         blog(
-            `${payload.user} triggered the app mention in ${payload.channel}`,
+            `<@${payload.user}> started a quest in <#${payload.channel}>`,
             'info'
         )
 

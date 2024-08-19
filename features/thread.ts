@@ -15,11 +15,6 @@ const mention = async () => {
 
         if (!thread || thread.userID != payload.user) return
 
-        blog(
-            `${payload.user} triggered the message handler in ${payload.channel}`,
-            'info'
-        )
-
         await respond(payload, thread.quest, thread.scene, thread.id)
     })
 
