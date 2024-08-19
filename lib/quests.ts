@@ -6,6 +6,49 @@ import type {
 } from 'slack-edge'
 import { slackClient, openAIClient } from '..'
 import type { ChatCompletionMessageParam } from 'openai/resources/index.mjs'
+import { parse } from 'yaml'
+
+const file = await Bun.file('lib/quests.yaml').text()
+const questsRaw: {
+    characters: {
+        [key: string]: {
+            prompt: string
+            image: string
+        }
+    }
+    quests: {
+        [key: string]: {
+            [key: string]: {
+                prompt: string
+                character: string
+            }
+        }
+    }
+} = parse(file)
+
+// parse the quests into an array of quest arrays
+const quests = Object.entries(questsRaw.quests).map(([questName, scenes]) => {
+    const questScenes = Object.entries(scenes).map(([sceneName, scene]) => {
+        return {
+            prompt: scene.prompt,
+            character: scene.character,
+        }
+    })
+    return {
+        name: questName,
+        scenes: questScenes,
+    }
+})
+
+const characters = Object.entries(questsRaw.characters).map(
+    ([name, character]) => {
+        return {
+            name: name,
+            prompt: character.prompt,
+            image: character.image,
+        }
+    }
+)
 
 export async function respond(
     say: (
