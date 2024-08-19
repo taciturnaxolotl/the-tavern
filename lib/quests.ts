@@ -5,8 +5,13 @@ import type {
     GenericMessageEvent,
 } from 'slack-edge'
 import { slackClient, openAIClient } from '..'
-import type { ChatCompletionMessageParam } from 'openai/resources/index.mjs'
+import type {
+    ChatCompletion,
+    ChatCompletionMessageParam,
+    ChatCompletionTool,
+} from 'openai/resources/index.mjs'
 import { parse } from 'yaml'
+import clog from './Logger'
 
 const file = await Bun.file('lib/quests.yaml').text()
 const questsRaw: {
@@ -49,6 +54,16 @@ const characters = Object.fromEntries(
         },
     ])
 )
+
+const tools: ChatCompletionTool[] = [
+    {
+        type: 'function',
+        function: {
+            name: 'list_quests',
+            description: 'Lists the quests available to the user',
+        },
+    },
+]
 
 export async function respond(
     say: (
@@ -111,13 +126,13 @@ export async function respond(
     await slackClient.chat.update({
         ts: initalMesssage.ts!,
         channel: initalMesssage.channel!,
-        text: response,
+        text: response!,
         blocks: [
             {
                 type: 'section',
                 text: {
                     type: 'mrkdwn',
-                    text: response,
+                    text: response!,
                 },
             },
         ],
@@ -148,7 +163,42 @@ async function toolWrapper(
         model: 'gpt-4o-mini',
         messages: messages,
         max_tokens: 500,
+        tools,
     })
 
-    return completion.choices[0].message.content!
+    return toolHandlerRecursive(completion, messages)
+}
+
+async function toolHandlerRecursive(
+    completion: ChatCompletion,
+    messages: ChatCompletionMessageParam[]
+) {
+    if (completion.choices[0].message.tool_calls?.length! > 0) {
+        messages.push(completion.choices[0].message)
+        for (const toolCall of completion.choices[0].message.tool_calls!) {
+            if (toolCall.function.name == 'list_quests') {
+                clog('listing quests', 'info')
+                messages.push({
+                    role: 'tool',
+                    content: JSON.stringify(
+                        Object.entries(quests).map(
+                            ([questName, quest]) => questName
+                        )
+                    ),
+                    tool_call_id: toolCall.id,
+                })
+            }
+        }
+
+        const newCompletion = await openAIClient.chat.completions.create({
+            model: 'gpt-4o-mini',
+            messages: messages,
+            tools,
+            max_tokens: 500,
+        })
+
+        return await toolHandlerRecursive(newCompletion, messages)
+    } else {
+        return completion.choices[0].message.content
+    }
 }
