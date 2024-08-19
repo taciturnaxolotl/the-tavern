@@ -1,24 +1,29 @@
 quests:
     baby-bear:
-        scene1:
-            prompt: 'Agree to help the baby bear find its mom'
-            character: 'cubby'
-        scene2:
-            prompt: 'Follow the baby bear through the forest'
-            character: 'cubby'
-        scene3:
-            prompt: 'Talk to the squirrel and get information from it eventualy that the bear was eating honey on the opposite side of the forest'
-            character: 'nibbles'
-        scene4:
-            prompt: "Find the bear on the other side of the forest and placate her convice her that you didn't steal her cub"
-            character: 'matilda'
-        scene5:
-            prompt: 'Return to the tavern and get paid in stew'
-            character: 'mcduffy'
+        description: 'A baby bear has lost its mother in the forest. Help the baby bear find its mother and return it to the tavern for a reward.'
+        scenes:
+            scene1:
+                prompt: 'Agree to help the baby bear find its mom'
+                character: 'cubby'
+            scene2:
+                prompt: 'Follow the baby bear through the forest'
+                character: 'cubby'
+            scene3:
+                prompt: 'Talk to the squirrel and get information from it eventualy that the bear was eating honey on the opposite side of the forest'
+                character: 'nibbles'
+            scene4:
+                prompt: "Find the bear on the other side of the forest and placate her convice her that you didn't steal her cub"
+                character: 'matilda'
+            scene5:
+                prompt: 'Return to the tavern and get paid in stew'
+                character: 'mcduffy'
     tavern:
-        scene1:
-            prompt: 'Great the user that just enterd the tavern and tell them about the bounty board'
-            character: 'mcduffy'
+        description: 'The tavern is a hub of activity and gossip. Talk to the proprietor, McDuffy, and learn about the bounty board.'
+        noshow: true
+        scenes:
+            scene1:
+                prompt: 'Great the user that just enterd the tavern and tell them about the bounty board'
+                character: 'mcduffy'
 
 characters:
     cubby:

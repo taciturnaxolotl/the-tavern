@@ -18,9 +18,13 @@ const questsRaw: {
     }
     quests: {
         [key: string]: {
-            [key: string]: {
-                prompt: string
-                character: string
+            description: string
+            noshow?: boolean
+            scenes: {
+                [key: string]: {
+                    prompt: string
+                    character: string
+                }
             }
         }
     }
@@ -28,15 +32,21 @@ const questsRaw: {
 
 // Parse the quests into an array of quest arrays
 const quests = Object.fromEntries(
-    Object.entries(questsRaw.quests)
-        .map(([questName, scenes]) => ({
-            name: questName,
-            scenes: Object.entries(scenes).map(([sceneName, scene]) => ({
-                prompt: scene.prompt,
-                character: scene.character,
-            })),
-        }))
-        .map((quest) => [quest.name, quest])
+    Object.entries(questsRaw.quests).map(([name, quest]) => {
+        return [
+            name,
+            {
+                description: quest.description,
+                noshow: quest.noshow,
+                scenes: Object.entries(quest.scenes).map(([_, sceneData]) => {
+                    return {
+                        prompt: sceneData.prompt,
+                        character: sceneData.character,
+                    }
+                }),
+            },
+        ]
+    })
 )
 
 const characters = Object.fromEntries(
@@ -203,9 +213,12 @@ async function toolHandlerRecursive(
                     messages.push({
                         role: 'tool',
                         content: JSON.stringify(
-                            Object.entries(quests).map(
-                                ([questName]) => questName
-                            )
+                            Object.entries(quests)
+                                .filter(([_, quest]) => !quest.noshow)
+                                .map(([name, quest]) => ({
+                                    name,
+                                    description: quest.description,
+                                }))
                         ),
                         tool_call_id: toolCall.id,
                     })
