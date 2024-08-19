@@ -6,7 +6,7 @@ import type {
     ChatCompletionTool,
 } from 'openai/resources/index.mjs'
 import { parse } from 'yaml'
-import clog from './Logger'
+import clog, { blog } from './Logger'
 
 const file = await Bun.file('lib/quests.yaml').text()
 const questsRaw: {
@@ -83,6 +83,13 @@ const tools: ChatCompletionTool[] = [
                 },
                 required: ['quest'],
             },
+        },
+    },
+    {
+        type: 'function',
+        function: {
+            name: 'next_scene',
+            description: 'switch to next scene',
         },
     },
 ]
@@ -201,7 +208,7 @@ async function toolWrapper(
             role: 'system',
             content: `${
                 characters[currentScene.character].prompt
-            } Answer in no more than a paragraph. The players's name is <@${userID}>; refer to them by it.`,
+            } Answer in no more than a paragraph. The players's name is <@${userID}>; refer to them by it. Go to the next scene when the goal is completed by the user`,
         }
     )
 
@@ -225,9 +232,9 @@ async function toolHandlerRecursive(
     if (completion.choices[0].message.tool_calls?.length! > 0) {
         messages.push(completion.choices[0].message)
         for (const toolCall of completion.choices[0].message.tool_calls!) {
+            blog('function call for ' + toolCall.function.name, 'info')
             switch (toolCall.function.name) {
                 case 'list_quests': {
-                    clog('listing quests', 'info')
                     messages.push({
                         role: 'tool',
                         content: JSON.stringify(
@@ -244,7 +251,6 @@ async function toolHandlerRecursive(
                 }
                 case 'choose_quest': {
                     const args = JSON.parse(toolCall.function.arguments)
-                    clog('choosing quest ' + args.quest, 'info')
                     // check if that quest exists
                     if (quests[args.quest] == undefined) {
                         messages.push({
@@ -266,7 +272,36 @@ async function toolHandlerRecursive(
                         content: `switched quest`,
                         tool_call_id: toolCall.id,
                     })
-                    extraMessage = args.quest
+                    newQuest = args.quest
+                    break
+                }
+                case 'next_scene': {
+                    const thread = await prisma.threads.findFirst({
+                        where: {
+                            id: threadID,
+                        },
+                    })
+                    if (thread == null) {
+                        messages.push({
+                            role: 'tool',
+                            content: `thread not found`,
+                            tool_call_id: toolCall.id,
+                        })
+                        break
+                    }
+                    await prisma.threads.update({
+                        where: { id: threadID },
+                        data: {
+                            scene: thread.scene + 1,
+                        },
+                    })
+                    messages.push({
+                        role: 'tool',
+                        content: `switched scene`,
+                        tool_call_id: toolCall.id,
+                    })
+                    newScene = thread.scene + 1
+                    break
                 }
             }
         }

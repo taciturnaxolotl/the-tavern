@@ -3,16 +3,16 @@ quests:
         description: 'A baby bear has lost its mother in the forest. Help the baby bear find its mother. When you return to the tavern the owner will give you some food.'
         scenes:
             scene1:
-                prompt: 'Agree to help the baby bear find its mom'
+                prompt: 'The goal for this scene is to have the user agree to help the baby bear find its mom when the goal is completed go to the next scene'
                 character: 'cubby'
             scene2:
-                prompt: 'Follow the baby bear through the forest'
+                prompt: "The goal for this scene is to have the user explore the forest with the bear and after a few dead ends find a squirrel when the goal is completed go to the next scene; the squirrel shouldn't talk in this section"
                 character: 'cubby'
             scene3:
-                prompt: 'Talk to the squirrel and get information from it eventualy that the bear was eating honey on the opposite side of the forest'
+                prompt: 'The goal for this scene is to talk to the squirrel and get information from it eventualy that the mama bear was eating honey on the opposite side of the forest when the goal is completed go to the next scene'
                 character: 'nibbles'
             scene4:
-                prompt: "Find the bear on the other side of the forest and placate her convice her that you didn't steal her cub"
+                prompt: "The goal for this scene is to placate the mama bear and convice her that you didn't steal her cub. Go to the next scene after the user explains themselves"
                 character: 'matilda'
             scene5:
                 prompt: 'Return to the tavern and get paid in stew'
