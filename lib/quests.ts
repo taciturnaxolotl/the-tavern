@@ -70,12 +70,7 @@ export async function respond(
         ],
     })
 
-    let messages: ChatCompletionMessageParam[] = [
-        {
-            role: 'system',
-            content: `You are a the propriator of the tavern and you are gruff and rude but eventually warm up to the party. Answer in no more than a paragraph. Your name is McDuffy and you are scottish. The players's name is <@${event.user}>; refer to them by it`,
-        },
-    ]
+    let messages: ChatCompletionMessageParam[] = []
 
     if (event.thread_ts != undefined) {
         // get the contents of the thread
@@ -109,24 +104,40 @@ export async function respond(
         })
     }
 
-    const response = await openAIClient.chat.completions.create({
-        model: 'gpt-4o-mini',
-        messages: messages,
-        max_tokens: 500,
-    })
+    const response = await toolWrapper('', 0, event.user!, messages)
 
     await slackClient.chat.update({
         ts: initalMesssage.ts!,
         channel: initalMesssage.channel!,
-        text: response.choices[0].message.content!,
+        text: response,
         blocks: [
             {
                 type: 'section',
                 text: {
                     type: 'mrkdwn',
-                    text: response.choices[0].message.content!,
+                    text: response,
                 },
             },
         ],
     })
+}
+
+async function toolWrapper(
+    quest: string,
+    scene: number,
+    userID: string,
+    messages: ChatCompletionMessageParam[]
+) {
+    messages.push({
+        role: 'system',
+        content: `You are a the propriator of the tavern and you are gruff and rude but eventually warm up to the party. Answer in no more than a paragraph. Your name is McDuffy and you are scottish. The players's name is <@${userID}>; refer to them by it`,
+    })
+
+    const completion = await openAIClient.chat.completions.create({
+        model: 'gpt-4o-mini',
+        messages: messages,
+        max_tokens: 500,
+    })
+
+    return completion.choices[0].message.content!
 }
