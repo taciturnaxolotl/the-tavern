@@ -91,7 +91,8 @@ export async function respond(
     event: AppMentionEvent | GenericMessageEvent,
     quest: string,
     scene: number,
-    threadID: string
+    threadID: string,
+    extraMessage?: boolean
 ) {
     const currentScene = quests[quest].scenes[scene]
 
@@ -146,6 +147,13 @@ export async function respond(
         })
     }
 
+    if (extraMessage)
+        messages.push({
+            role: 'user',
+            content: 'hi! can you introduce your self?',
+            name: event.user!,
+        })
+
     const response = await toolWrapper(
         currentScene,
         event.user!,
@@ -156,17 +164,22 @@ export async function respond(
     await slackClient.chat.update({
         ts: initalMesssage.ts!,
         channel: initalMesssage.channel!,
-        text: response!,
+        text: response.message!,
         blocks: [
             {
                 type: 'section',
                 text: {
                     type: 'mrkdwn',
-                    text: response!,
+                    text: response.message!,
                 },
             },
         ],
     })
+
+    console.log(response)
+
+    if (response.extraMessage != undefined)
+        await respond(event, response.extraMessage, 0, threadID, true)
 }
 
 async function toolWrapper(
@@ -201,7 +214,8 @@ async function toolWrapper(
 async function toolHandlerRecursive(
     completion: ChatCompletion,
     messages: ChatCompletionMessageParam[],
-    threadID: string
+    threadID: string,
+    extraMessage?: string
 ) {
     if (completion.choices[0].message.tool_calls?.length! > 0) {
         messages.push(completion.choices[0].message)
@@ -247,6 +261,7 @@ async function toolHandlerRecursive(
                         content: `switched quest`,
                         tool_call_id: toolCall.id,
                     })
+                    extraMessage = args.quest
                 }
             }
         }
@@ -258,8 +273,16 @@ async function toolHandlerRecursive(
             max_tokens: 500,
         })
 
-        return await toolHandlerRecursive(newCompletion, messages, threadID)
+        return await toolHandlerRecursive(
+            newCompletion,
+            messages,
+            threadID,
+            extraMessage
+        )
     } else {
-        return completion.choices[0].message.content
+        return {
+            message: completion.choices[0].message.content,
+            extraMessage,
+        }
     }
 }
