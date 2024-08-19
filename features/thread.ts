@@ -22,6 +22,8 @@ const mention = async () => {
 
         await respond(payload, thread.quest, thread.scene, thread.id)
     })
+
+    slackApp.event('message', async () => {})
 }
 
 export default mention
