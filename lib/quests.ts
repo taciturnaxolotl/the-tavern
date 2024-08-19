@@ -214,6 +214,15 @@ async function toolHandlerRecursive(
                 case 'choose_quest': {
                     const args = JSON.parse(toolCall.function.arguments)
                     clog('choosing quest ' + args.quest, 'info')
+                    // check if that quest exists
+                    if (quests[args.quest] == undefined) {
+                        messages.push({
+                            role: 'tool',
+                            content: `Quest ${args.quest} does not exist; please check list quests for proper formating`,
+                            tool_call_id: toolCall.id,
+                        })
+                        break
+                    }
                     await prisma.threads.update({
                         where: { id: threadID },
                         data: {
