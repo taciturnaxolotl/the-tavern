@@ -1,4 +1,4 @@
-import { prisma, slackApp } from '../index'
+import theTavern, { prisma, slackApp } from '../index'
 import { blog } from '../lib/Logger'
 import { respond } from '../lib/quests'
 
@@ -16,7 +16,7 @@ const mention = async () => {
             'info'
         )
 
-        await prisma.threads.create({
+        const thread = await prisma.threads.create({
             data: {
                 userID: payload.user,
                 ts: payload.ts,
@@ -24,7 +24,7 @@ const mention = async () => {
             },
         })
 
-        await respond(context.say, payload)
+        await respond(context.say, payload, thread.quest, thread.scene)
     })
 }
 

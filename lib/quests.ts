@@ -54,7 +54,9 @@ export async function respond(
     say: (
         params: Omit<ChatPostMessageRequest, 'channel'>
     ) => Promise<ChatPostMessageResponse>,
-    event: AppMentionEvent | GenericMessageEvent
+    event: AppMentionEvent | GenericMessageEvent,
+    quest: string,
+    scene: number
 ) {
     const initalMesssage = await say({
         thread_ts: event?.ts,
@@ -104,7 +106,7 @@ export async function respond(
         })
     }
 
-    const response = await toolWrapper('tavern', 0, event.user!, messages)
+    const response = await toolWrapper(quest, scene, event.user!, messages)
 
     await slackClient.chat.update({
         ts: initalMesssage.ts!,

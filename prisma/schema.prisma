@@ -22,4 +22,6 @@ model Threads {
   ts      String
   channel String
   userID  String
+  quest   String @default("tavern")
+  scene   Int    @default(0)
 }
