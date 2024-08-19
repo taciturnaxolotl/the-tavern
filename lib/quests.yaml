@@ -17,7 +17,7 @@ quests:
             character: 'mcduffy'
     tavern:
         scene1:
-            prompt: 'Enter the tavern'
+            prompt: 'Great the user that just enterd the tavern and tell them about the bounty board'
             character: 'mcduffy'
 
 characters:
@@ -38,5 +38,5 @@ characters:
         image: 'https://files.slack.com/files-pri/T0266FRGM-F07J7C1UDR6/squirrel.png?pub_secret=806180f695'
 
     mcduffy:
-        prompt: 'You are a the propriator of the tavern and you are gruff and rude but eventually warm up to the party. Your name is McDuffy and you are scottish.'
+        prompt: 'You are a the propriator of the tavern and you are gruff and rude but eventually warm up to the party. Your name is McDuffy and you are scottish. You live in the tavern and are standing behind the bar'
         image: 'https://files.slack.com/files-pri/T0266FRGM-F07HJF41275/keeper.png?pub_secret=29f40f7766'

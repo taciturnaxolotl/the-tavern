@@ -175,7 +175,7 @@ async function toolWrapper(
             role: 'system',
             content: `${
                 characters[currentScene.character]
-            } Answer in no more than a paragraph. The players's name is <@${userID}>; refer to them by it`,
+            } Answer in no more than a paragraph. The players's name is <@${userID}>; refer to them by it.`,
         }
     )
 
