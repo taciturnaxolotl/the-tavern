@@ -181,9 +181,7 @@ async function toolHandlerRecursive(
                 messages.push({
                     role: 'tool',
                     content: JSON.stringify(
-                        Object.entries(quests).map(
-                            ([questName, quest]) => questName
-                        )
+                        Object.entries(quests).map(([questName]) => questName)
                     ),
                     tool_call_id: toolCall.id,
                 })
