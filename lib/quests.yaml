@@ -1,6 +1,6 @@
 quests:
     baby-bear:
-        description: 'A baby bear has lost its mother in the forest. Help the baby bear find its mother and return it to the tavern for a reward.'
+        description: 'A baby bear has lost its mother in the forest. Help the baby bear find its mother. When you return to the tavern the owner will give you some food.'
         scenes:
             scene1:
                 prompt: 'Agree to help the baby bear find its mom'
@@ -22,7 +22,7 @@ quests:
         noshow: true
         scenes:
             scene1:
-                prompt: 'Great the user that just enterd the tavern and tell them about the bounty board'
+                prompt: 'Have the user take on a quest'
                 character: 'mcduffy'
 
 characters:

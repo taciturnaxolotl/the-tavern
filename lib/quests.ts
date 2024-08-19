@@ -93,7 +93,6 @@ export async function respond(
     scene: number,
     threadID: string
 ) {
-    console.log(quest, scene)
     const currentScene = quests[quest].scenes[scene]
 
     const initalMesssage = await slackClient.chat.postMessage({
@@ -143,7 +142,7 @@ export async function respond(
     } else {
         messages.push({
             role: 'user',
-            content: event.text!,
+            content: 'hi! what quest are there for me to do?',
         })
     }
 
