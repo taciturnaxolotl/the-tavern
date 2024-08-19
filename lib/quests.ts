@@ -176,8 +176,6 @@ export async function respond(
         ],
     })
 
-    console.log(response)
-
     if (response.extraMessage != undefined)
         await respond(event, response.extraMessage, 0, threadID, true)
 }
@@ -196,7 +194,7 @@ async function toolWrapper(
         {
             role: 'system',
             content: `${
-                characters[currentScene.character]
+                characters[currentScene.character].prompt
             } Answer in no more than a paragraph. The players's name is <@${userID}>; refer to them by it.`,
         }
     )
