@@ -66,16 +66,17 @@ const tools: ChatCompletionTool[] = [
 ]
 
 export async function respond(
-    say: (
-        params: Omit<ChatPostMessageRequest, 'channel'>
-    ) => Promise<ChatPostMessageResponse>,
     event: AppMentionEvent | GenericMessageEvent,
     quest: string,
     scene: number
 ) {
+    const currentScene = quests[quest].scenes[scene]
+
     const initalMesssage = await slackClient.chat.postMessage({
         thread_ts: event?.ts,
         channel: event.channel,
+        icon_url: characters[currentScene.character].image,
+        username: currentScene.character,
         text: 'thinking...',
         blocks: [
             {
@@ -122,7 +123,7 @@ export async function respond(
         })
     }
 
-    const response = await toolWrapper(quest, scene, event.user!, messages)
+    const response = await toolWrapper(currentScene, event.user!, messages)
 
     await slackClient.chat.update({
         ts: initalMesssage.ts!,
@@ -141,12 +142,10 @@ export async function respond(
 }
 
 async function toolWrapper(
-    quest: string,
-    scene: number,
+    currentScene: { prompt: string; character: string },
     userID: string,
     messages: ChatCompletionMessageParam[]
 ) {
-    const currentScene = quests[quest].scenes[scene]
     messages.push(
         {
             role: 'system',
