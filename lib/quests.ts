@@ -6,7 +6,7 @@ import type {
     ChatCompletionTool,
 } from 'openai/resources/index.mjs'
 import { parse } from 'yaml'
-import clog, { blog } from './Logger'
+import { blog } from './Logger'
 
 const file = await Bun.file('lib/quests.yaml').text()
 const questsRaw: {
@@ -92,6 +92,22 @@ const tools: ChatCompletionTool[] = [
             description: 'switch to next scene',
         },
     },
+    {
+        type: 'function',
+        function: {
+            name: 'reward',
+            description: 'give the user a reward',
+            parameters: {
+                type: 'object',
+                properties: {
+                    reward: {
+                        type: 'string',
+                    },
+                },
+                required: ['reward'],
+            },
+        },
+    },
 ]
 
 export async function respond(
@@ -165,7 +181,9 @@ export async function respond(
         currentScene,
         event.user!,
         messages,
-        threadID
+        threadID,
+        scene,
+        quest
     )
 
     await slackClient.chat.update({
@@ -197,7 +215,9 @@ async function toolWrapper(
     currentScene: { prompt: string; character: string },
     userID: string,
     messages: ChatCompletionMessageParam[],
-    threadID: string
+    threadID: string,
+    sceneID: number,
+    quest: string
 ) {
     messages.push(
         {
@@ -219,13 +239,15 @@ async function toolWrapper(
         tools,
     })
 
-    return toolHandlerRecursive(completion, messages, threadID)
+    return toolHandlerRecursive(completion, messages, threadID, sceneID, quest)
 }
 
 async function toolHandlerRecursive(
     completion: ChatCompletion,
     messages: ChatCompletionMessageParam[],
     threadID: string,
+    scene: number,
+    quest: string,
     newQuest?: string,
     newScene?: number
 ) {
@@ -303,6 +325,24 @@ async function toolHandlerRecursive(
                     newScene = thread.scene + 1
                     break
                 }
+                case 'reward': {
+                    const args = JSON.parse(toolCall.function.arguments)
+                    // check if its the last scene
+                    if (scene != quests[quest].scenes.length - 1) {
+                        messages.push({
+                            role: 'tool',
+                            content: `cannot reward user until the last scene`,
+                            tool_call_id: toolCall.id,
+                        })
+                        break
+                    }
+                    messages.push({
+                        role: 'tool',
+                        content: `gave user ${args.reward}`,
+                        tool_call_id: toolCall.id,
+                    })
+                    break
+                }
             }
         }
 
@@ -317,6 +357,8 @@ async function toolHandlerRecursive(
             newCompletion,
             messages,
             threadID,
+            scene,
+            quest,
             newQuest,
             newScene
         )
