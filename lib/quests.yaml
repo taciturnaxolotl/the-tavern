@@ -15,6 +15,10 @@ quests:
         scene5:
             prompt: 'Return to the tavern and get paid in stew'
             character: 'mcduffy'
+    tavern:
+        scene1:
+            prompt: 'Enter the tavern'
+            character: 'mcduffy'
 
 characters:
     cubby:
@@ -34,5 +38,5 @@ characters:
         image: 'hermit.png'
 
     mcduffy:
-        prompt: "You are the proprietor of a tavern. You are gruff and rude at first, but you eventually warm up to the party. You speak in a thick Scottish accent and have a rough exterior, but there's a softer side hidden underneath. Your name is McDuffy, and you offer the party payment in the form of stew."
+        prompt: 'You are a the propriator of the tavern and you are gruff and rude but eventually warm up to the party. Your name is McDuffy and you are scottish.'
         image: 'keeper.png'

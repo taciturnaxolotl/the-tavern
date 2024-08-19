@@ -26,28 +26,28 @@ const questsRaw: {
     }
 } = parse(file)
 
-// parse the quests into an array of quest arrays
-const quests = Object.entries(questsRaw.quests).map(([questName, scenes]) => {
-    const questScenes = Object.entries(scenes).map(([sceneName, scene]) => {
-        return {
-            prompt: scene.prompt,
-            character: scene.character,
-        }
-    })
-    return {
-        name: questName,
-        scenes: questScenes,
-    }
-})
+// Parse the quests into an array of quest arrays
+const quests = Object.fromEntries(
+    Object.entries(questsRaw.quests)
+        .map(([questName, scenes]) => ({
+            name: questName,
+            scenes: Object.entries(scenes).map(([sceneName, scene]) => ({
+                prompt: scene.prompt,
+                character: scene.character,
+            })),
+        }))
+        .map((quest) => [quest.name, quest])
+)
 
-const characters = Object.entries(questsRaw.characters).map(
-    ([name, character]) => {
-        return {
+const characters = Object.fromEntries(
+    Object.entries(questsRaw.characters).map(([name, character]) => [
+        name,
+        {
             name: name,
             prompt: character.prompt,
             image: character.image,
-        }
-    }
+        },
+    ])
 )
 
 export async function respond(
@@ -104,7 +104,7 @@ export async function respond(
         })
     }
 
-    const response = await toolWrapper('', 0, event.user!, messages)
+    const response = await toolWrapper('tavern', 0, event.user!, messages)
 
     await slackClient.chat.update({
         ts: initalMesssage.ts!,
@@ -128,10 +128,19 @@ async function toolWrapper(
     userID: string,
     messages: ChatCompletionMessageParam[]
 ) {
-    messages.push({
-        role: 'system',
-        content: `You are a the propriator of the tavern and you are gruff and rude but eventually warm up to the party. Answer in no more than a paragraph. Your name is McDuffy and you are scottish. The players's name is <@${userID}>; refer to them by it`,
-    })
+    const currentScene = quests[quest].scenes[scene]
+    messages.push(
+        {
+            role: 'system',
+            content: currentScene.prompt,
+        },
+        {
+            role: 'system',
+            content: `${
+                characters[currentScene.character]
+            } Answer in no more than a paragraph. The players's name is <@${userID}>; refer to them by it`,
+        }
+    )
 
     const completion = await openAIClient.chat.completions.create({
         model: 'gpt-4o-mini',
