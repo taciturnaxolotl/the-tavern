@@ -1,5 +1,5 @@
 import type { AppMentionEvent, GenericMessageEvent } from 'slack-edge'
-import { slackClient, openAIClient } from '..'
+import { slackClient, openAIClient, prisma } from '..'
 import type {
     ChatCompletion,
     ChatCompletionMessageParam,
@@ -58,13 +58,32 @@ const tools: ChatCompletionTool[] = [
             description: 'Lists the quests available to the user',
         },
     },
+    {
+        type: 'function',
+        function: {
+            name: 'choose_quest',
+            description:
+                'start quest for the user on the next turn; make sure to check list_quests to make sure its in the correct format',
+            parameters: {
+                type: 'object',
+                properties: {
+                    quest: {
+                        type: 'string',
+                    },
+                },
+                required: ['quest'],
+            },
+        },
+    },
 ]
 
 export async function respond(
     event: AppMentionEvent | GenericMessageEvent,
     quest: string,
-    scene: number
+    scene: number,
+    threadID: string
 ) {
+    console.log(quest, scene)
     const currentScene = quests[quest].scenes[scene]
 
     const initalMesssage = await slackClient.chat.postMessage({
@@ -118,7 +137,12 @@ export async function respond(
         })
     }
 
-    const response = await toolWrapper(currentScene, event.user!, messages)
+    const response = await toolWrapper(
+        currentScene,
+        event.user!,
+        messages,
+        threadID
+    )
 
     await slackClient.chat.update({
         ts: initalMesssage.ts!,
@@ -139,7 +163,8 @@ export async function respond(
 async function toolWrapper(
     currentScene: { prompt: string; character: string },
     userID: string,
-    messages: ChatCompletionMessageParam[]
+    messages: ChatCompletionMessageParam[],
+    threadID: string
 ) {
     messages.push(
         {
@@ -161,25 +186,47 @@ async function toolWrapper(
         tools,
     })
 
-    return toolHandlerRecursive(completion, messages)
+    return toolHandlerRecursive(completion, messages, threadID)
 }
 
 async function toolHandlerRecursive(
     completion: ChatCompletion,
-    messages: ChatCompletionMessageParam[]
+    messages: ChatCompletionMessageParam[],
+    threadID: string
 ) {
     if (completion.choices[0].message.tool_calls?.length! > 0) {
         messages.push(completion.choices[0].message)
         for (const toolCall of completion.choices[0].message.tool_calls!) {
-            if (toolCall.function.name == 'list_quests') {
-                clog('listing quests', 'info')
-                messages.push({
-                    role: 'tool',
-                    content: JSON.stringify(
-                        Object.entries(quests).map(([questName]) => questName)
-                    ),
-                    tool_call_id: toolCall.id,
-                })
+            switch (toolCall.function.name) {
+                case 'list_quests': {
+                    clog('listing quests', 'info')
+                    messages.push({
+                        role: 'tool',
+                        content: JSON.stringify(
+                            Object.entries(quests).map(
+                                ([questName]) => questName
+                            )
+                        ),
+                        tool_call_id: toolCall.id,
+                    })
+                    break
+                }
+                case 'choose_quest': {
+                    const args = JSON.parse(toolCall.function.arguments)
+                    clog('choosing quest ' + args.quest, 'info')
+                    await prisma.threads.update({
+                        where: { id: threadID },
+                        data: {
+                            quest: args.quest,
+                            scene: 0,
+                        },
+                    })
+                    messages.push({
+                        role: 'tool',
+                        content: `switched quest`,
+                        tool_call_id: toolCall.id,
+                    })
+                }
             }
         }
 
@@ -190,7 +237,7 @@ async function toolHandlerRecursive(
             max_tokens: 500,
         })
 
-        return await toolHandlerRecursive(newCompletion, messages)
+        return await toolHandlerRecursive(newCompletion, messages, threadID)
     } else {
         return completion.choices[0].message.content
     }
