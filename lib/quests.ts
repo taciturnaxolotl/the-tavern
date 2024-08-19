@@ -73,8 +73,9 @@ export async function respond(
     quest: string,
     scene: number
 ) {
-    const initalMesssage = await say({
+    const initalMesssage = await slackClient.chat.postMessage({
         thread_ts: event?.ts,
+        channel: event.channel,
         text: 'thinking...',
         blocks: [
             {

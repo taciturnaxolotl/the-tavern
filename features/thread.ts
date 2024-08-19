@@ -20,7 +20,7 @@ const mention = async () => {
             'info'
         )
 
-        await respond(context.say, payload, thread.quest, thread.scene)
+        await respond(payload, thread.quest, thread.scene)
     })
 }
 
