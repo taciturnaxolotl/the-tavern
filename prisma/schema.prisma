@@ -18,10 +18,11 @@ model Analytics {
 }
 
 model Threads {
-  id      String @id @default(uuid())
+  id      String  @id @default(uuid())
   ts      String
   channel String
   userID  String
-  quest   String @default("tavern")
-  scene   Int    @default(0)
+  quest   String  @default("tavern")
+  scene   Int     @default(0)
+  locked  Boolean
 }

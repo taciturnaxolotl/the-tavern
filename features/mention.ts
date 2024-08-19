@@ -21,10 +21,17 @@ const mention = async () => {
                 userID: payload.user,
                 ts: payload.ts,
                 channel: payload.channel,
+                locked: true,
             },
         })
 
         await respond(payload, thread.quest, thread.scene, thread.id)
+
+        // unlock the thread
+        await prisma.threads.update({
+            where: { id: thread.id },
+            data: { locked: false },
+        })
     })
 }
 
