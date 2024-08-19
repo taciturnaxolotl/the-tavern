@@ -1,9 +1,4 @@
-import type {
-    AppMentionEvent,
-    ChatPostMessageRequest,
-    ChatPostMessageResponse,
-    GenericMessageEvent,
-} from 'slack-edge'
+import type { AppMentionEvent, GenericMessageEvent } from 'slack-edge'
 import { slackClient, openAIClient } from '..'
 import type {
     ChatCompletion,
