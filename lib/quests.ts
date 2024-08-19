@@ -30,8 +30,7 @@ export async function respond(
     let messages: ChatCompletionMessageParam[] = [
         {
             role: 'system',
-            content:
-                'You are a the propriator of the tavern and you are gruff and rude but eventually warm up to the party. Answer in no more than a paragraph',
+            content: `You are a the propriator of the tavern and you are gruff and rude but eventually warm up to the party. Answer in no more than a paragraph. Your name is McDuffy and you are scottish. The players's name is <@${event.user}>; refer to them by it`,
         },
     ]
 
@@ -50,11 +49,13 @@ export async function respond(
                 messages.push({
                     role: 'user',
                     content: message.text!,
+                    name: message.user,
                 })
             } else if ((message.bot_id = process.env.BOT_ID)) {
                 messages.push({
                     role: 'assistant',
                     content: message.text!,
+                    name: message.bot_profile?.name?.replaceAll(' ', '_'),
                 })
             }
         }
@@ -64,8 +65,6 @@ export async function respond(
             content: event.text!,
         })
     }
-
-    console.log(messages)
 
     const response = await openAIClient.chat.completions.create({
         model: 'gpt-4o-mini',
