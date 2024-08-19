@@ -341,6 +341,10 @@ async function toolHandlerRecursive(
                         content: `gave user ${args.reward}`,
                         tool_call_id: toolCall.id,
                     })
+                    // remove the thread
+                    await prisma.threads.delete({
+                        where: { id: threadID },
+                    })
                     break
                 }
             }

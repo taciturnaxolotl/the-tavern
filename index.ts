@@ -1,4 +1,5 @@
 import { SlackApp } from 'slack-edge'
+import OpenAI from 'openai'
 
 import { PrismaClient } from '@prisma/client'
 
@@ -6,7 +7,7 @@ import * as features from './features/index'
 
 import { t } from './lib/template'
 import { blog } from './lib/Logger'
-import OpenAI from 'openai'
+
 const { version, name } = require('./package.json')
 const environment = process.env.NODE_ENV
 
