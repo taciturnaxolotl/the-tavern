@@ -176,8 +176,14 @@ export async function respond(
         ],
     })
 
-    if (response.extraMessage != undefined)
-        await respond(event, response.extraMessage, 0, threadID, true)
+    if (response.newQuest != undefined || response.newScene != undefined)
+        await respond(
+            event,
+            response.newQuest || quest,
+            response.newScene || 0,
+            threadID,
+            true
+        )
 }
 
 async function toolWrapper(
@@ -213,7 +219,8 @@ async function toolHandlerRecursive(
     completion: ChatCompletion,
     messages: ChatCompletionMessageParam[],
     threadID: string,
-    extraMessage?: string
+    newQuest?: string,
+    newScene?: number
 ) {
     if (completion.choices[0].message.tool_calls?.length! > 0) {
         messages.push(completion.choices[0].message)
@@ -275,12 +282,14 @@ async function toolHandlerRecursive(
             newCompletion,
             messages,
             threadID,
-            extraMessage
+            newQuest,
+            newScene
         )
     } else {
         return {
             message: completion.choices[0].message.content,
-            extraMessage,
+            newQuest,
+            newScene,
         }
     }
 }
