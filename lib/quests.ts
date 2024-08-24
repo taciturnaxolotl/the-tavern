@@ -204,14 +204,7 @@ export async function respond(
         ],
     })
 
-    if (response.newQuest != undefined || response.newScene != undefined)
-        await respond(
-            event,
-            response.newQuest || quest,
-            response.newScene || 0,
-            threadID,
-            true
-        )
+    console.log('response:', response)
 
     if (response.lockThread) {
         await slackClient.chat.postMessage({
@@ -240,7 +233,17 @@ export async function respond(
                 },
             ],
         })
+        return
     }
+
+    if (response.newQuest != undefined || response.newScene != undefined)
+        await respond(
+            event,
+            response.newQuest || quest,
+            response.newScene || 0,
+            threadID,
+            true
+        )
 }
 
 async function toolWrapper(
@@ -389,20 +392,21 @@ async function toolHandlerRecursive(
                         await prisma.threads.delete({
                             where: { id: threadID },
                         })
+
+                        await $`node lib/give-items.js ${userID} ${
+                            "'" + quests[quest].items + "'"
+                        } ${
+                            "'" +
+                            'Thanks for completing the quest <@' +
+                            userID +
+                            '>!' +
+                            "'"
+                        }`
+                        clog('gave user ' + args.reward, 'info')
                     } catch (e) {
                         blog(e as string, 'error')
                     }
 
-                    await $`node lib/give-items.js ${userID} ${
-                        "'" + quests[quest].items + "'"
-                    } ${
-                        "'" +
-                        'Thanks for completing the quest <@' +
-                        userID +
-                        '>!' +
-                        "'"
-                    }`
-                    clog('gave user ' + args.reward, 'info')
                     break
                 }
             }
