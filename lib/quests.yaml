@@ -1,6 +1,7 @@
 quests:
     baby-bear:
         description: 'A baby bear has lost its mother in the forest. Help the baby bear find its mother. When you return to the tavern the owner will give you some food.'
+        items: 'Stew,Stew,Bread'
         scenes:
             scene1:
                 prompt: 'The goal for this scene is to have the user agree to help the baby bear find its mom when the goal is completed go to the next scene'

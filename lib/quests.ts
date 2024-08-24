@@ -6,7 +6,8 @@ import type {
     ChatCompletionTool,
 } from 'openai/resources/index.mjs'
 import { parse } from 'yaml'
-import { blog } from './Logger'
+import clog, { blog } from './Logger'
+import { $ } from 'bun'
 
 const file = await Bun.file('lib/quests.yaml').text()
 const questsRaw: {
@@ -20,6 +21,7 @@ const questsRaw: {
         [key: string]: {
             description: string
             noshow?: boolean
+            items: string
             scenes: {
                 [key: string]: {
                     prompt: string
@@ -37,6 +39,7 @@ const quests = Object.fromEntries(
             name,
             {
                 description: quest.description,
+                items: quest.items,
                 noshow: quest.noshow,
                 scenes: Object.entries(quest.scenes).map(([_, sceneData]) => {
                     return {
@@ -209,6 +212,35 @@ export async function respond(
             threadID,
             true
         )
+
+    if (response.lockThread) {
+        await slackClient.chat.postMessage({
+            thread_ts: event.ts,
+            channel: event.channel,
+            text: 'You completed the quest!',
+            blocks: [
+                {
+                    type: 'section',
+                    text: {
+                        type: 'mrkdwn',
+                        text: 'You completed the quest! :tada:',
+                    },
+                },
+                {
+                    type: 'divider',
+                },
+                {
+                    type: 'context',
+                    elements: [
+                        {
+                            type: 'mrkdwn',
+                            text: 'Congratulations on completing the quest! :trophy:\nIf you wish to start another please ping the bot again!',
+                        },
+                    ],
+                },
+            ],
+        })
+    }
 }
 
 async function toolWrapper(
@@ -239,7 +271,14 @@ async function toolWrapper(
         tools,
     })
 
-    return toolHandlerRecursive(completion, messages, threadID, sceneID, quest)
+    return toolHandlerRecursive(
+        completion,
+        messages,
+        threadID,
+        sceneID,
+        quest,
+        userID
+    )
 }
 
 async function toolHandlerRecursive(
@@ -248,8 +287,10 @@ async function toolHandlerRecursive(
     threadID: string,
     scene: number,
     quest: string,
+    userID: string,
     newQuest?: string,
-    newScene?: number
+    newScene?: number,
+    lockThread?: boolean
 ) {
     if (completion.choices[0].message.tool_calls?.length! > 0) {
         messages.push(completion.choices[0].message)
@@ -334,17 +375,34 @@ async function toolHandlerRecursive(
                             content: `cannot reward user until the last scene`,
                             tool_call_id: toolCall.id,
                         })
+                        blog('cannot reward user until the last scene', 'error')
                         break
                     }
+                    lockThread = true
                     messages.push({
                         role: 'tool',
                         content: `gave user ${args.reward}`,
                         tool_call_id: toolCall.id,
                     })
-                    // remove the thread
-                    await prisma.threads.delete({
-                        where: { id: threadID },
-                    })
+                    try {
+                        // remove the thread
+                        await prisma.threads.delete({
+                            where: { id: threadID },
+                        })
+                    } catch (e) {
+                        blog(e as string, 'error')
+                    }
+
+                    await $`node lib/give-items.js ${userID} ${
+                        "'" + quests[quest].items + "'"
+                    } ${
+                        "'" +
+                        'Thanks for completing the quest <@' +
+                        userID +
+                        '>!' +
+                        "'"
+                    }`
+                    clog('gave user ' + args.reward, 'info')
                     break
                 }
             }
@@ -363,14 +421,17 @@ async function toolHandlerRecursive(
             threadID,
             scene,
             quest,
+            userID,
             newQuest,
-            newScene
+            newScene,
+            lockThread
         )
     } else {
         return {
             message: completion.choices[0].message.content,
             newQuest,
             newScene,
+            lockThread,
         }
     }
 }
