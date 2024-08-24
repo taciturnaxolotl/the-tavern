@@ -18,6 +18,25 @@ quests:
             scene5:
                 prompt: 'Return to the tavern and get paid in stew; immeidately run the reward function'
                 character: 'mcduffy'
+    whispering-grove:
+        description: 'A mysterious grove has appeared in the forest, and strange whispers can be heard from within. The villagers are too frightened to investigate, but McDuffy offers a reward for anyone brave enough to explore the grove and uncover its secrets.'
+        items: 'Socks,Tanzanite Ring,gp,gp,gp,gp,gp,gp,gp,gp,gp,gp,gp,gp,gp,gp,gp'
+        scenes:
+            scene1:
+                prompt: "The goal for this scene is to have the user accept McDuffy's challenge to investigate the grove. Once the user agrees, proceed to the next scene."
+                character: 'mcduffy'
+            scene2:
+                prompt: 'The goal for this scene is to have the user enter the grove and encounter eerie whispers. The whispers will lead the user deeper into the grove, where they find a strange amulet on the ground. When the user picks up the amulet, proceed to the next scene.'
+                character: 'whispering-voice'
+            scene3:
+                prompt: "The goal for this scene is to have the user encounter Grumbles, the hermit, who appears out of the shadows. He will speak in cryptic phrases, hinting at the amulet's power and the danger it brings. Grumbles will offer to take the amulet from the user in exchange for guidance out of the grove. When the user decides whether to keep or give the amulet, proceed to the next scene."
+                character: 'grumbles'
+            scene4:
+                prompt: "The goal for this scene is to have the user navigate their way out of the grove, either with Grumbles' help or by following the whispers again. If they kept the amulet, the whispers grow louder, leading them to a hidden treasure. If they gave the amulet to Grumbles, he will guide them out safely. Once the user exits the grove, proceed to the next scene."
+                character: 'grumbles'
+            scene5:
+                prompt: 'Return to the tavern and report your findings to McDuffy. He will reward the user with a bag of coins, but his reaction will differ based on whether the user kept or gave away the amulet. If they kept it, he warns them of its curse; if they gave it away, he expresses relief. Immediately run the reward function after this scene.'
+                character: 'mcduffy'
     tavern:
         description: 'The tavern is a hub of activity and gossip. Talk to the proprietor, McDuffy, and learn about the bounty board.'
         noshow: true
