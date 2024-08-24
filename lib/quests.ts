@@ -92,7 +92,8 @@ const tools: ChatCompletionTool[] = [
         type: 'function',
         function: {
             name: 'next_scene',
-            description: 'switch to next scene',
+            description:
+                'switch to next scene; run this immediately after the user discovers the goal',
         },
     },
     {
@@ -404,7 +405,14 @@ async function toolHandlerRecursive(
                         }`
                         clog('gave user ' + args.reward, 'info')
                     } catch (e) {
-                        blog(e as string, 'error')
+                        if (e instanceof Error) {
+                            messages.push({
+                                role: 'tool',
+                                content: `error: ${e.message}`,
+                                tool_call_id: toolCall.id,
+                            })
+                            blog(e.message, 'error')
+                        }
                     }
 
                     break

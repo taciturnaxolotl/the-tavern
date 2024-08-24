@@ -4,10 +4,10 @@ quests:
         items: 'Stew,Stew,Bread'
         scenes:
             scene1:
-                prompt: 'The goal for this scene is to have the user agree to help the baby bear find its mom when the goal is completed go to the next scene'
+                prompt: 'The goal for this scene is to have the user agree to help the baby bear find its mom when the goal is completed run the next scene'
                 character: 'cubby'
             scene2:
-                prompt: "The goal for this scene is to have the user explore the forest with the bear and after a few dead ends find a squirrel when the goal is completed go to the next scene; the squirrel shouldn't talk in this section"
+                prompt: "The goal for this scene is to have the user explore the forest with the bear and after a few dead ends find a squirrel when the goal is completed run the next scene; the squirrel shouldn't talk in this section; you should immediately go to the next scene after the user sugessts talking to the squirrel"
                 character: 'cubby'
             scene3:
                 prompt: 'The goal for this scene is to talk to the squirrel and get information from it eventualy that the mama bear was eating honey on the opposite side of the forest when the goal is completed go to the next scene'
@@ -16,7 +16,7 @@ quests:
                 prompt: "The goal for this scene is to placate the mama bear and convice her that you didn't steal her cub. Go to the next scene after the user explains themselves"
                 character: 'matilda'
             scene5:
-                prompt: 'Return to the tavern and get paid in stew'
+                prompt: 'Return to the tavern and get paid in stew; immeidately run the reward function'
                 character: 'mcduffy'
     tavern:
         description: 'The tavern is a hub of activity and gossip. Talk to the proprietor, McDuffy, and learn about the bounty board.'
