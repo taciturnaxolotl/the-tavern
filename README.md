@@ -62,7 +62,7 @@ This way, your new quests will be ready for action!
 
 ## Production
 
-Deploying The Tavern in a production environment is easy. Simply use a systemctl service file to manage the bot (i totaly would have used docker but i was burned by docker-prisma interactions in the past and so now I'm sticking to systemd services lol):
+Deploying The Tavern in a production environment is pretty easy. Simply use a systemctl service file to manage the bot (i totaly would have used docker but i was burned by docker-prisma interactions in the past and so now I'm sticking to systemd services lol):
 
 ```ini
 [Unit]
@@ -81,6 +81,8 @@ RestartSec=1s
 [Install]
 WantedBy=default.target
 ```
+
+I used [nest](https://guides.hackclub.app/index.php/Quickstart) to run my bot but it should run on any systemd based system with `bun` and `node` installed!
 
 ---
 
