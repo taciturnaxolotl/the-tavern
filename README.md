@@ -1,7 +1,7 @@
 # The Tavern
 
 <p align="center">
-  <img width="460" height="480" src=".github/images/tavern.png">
+  <img width="460" height="480" src=".github/images/tavern.png" alt="">
 </p>
 
 Welcome to The Tavern, your friendly quest bot! I run in the bag channels in Hackclub's [#market](https://app.slack.com/client/T0266FRGM/C06GA0PSXC5) channel! Just ping [@The Tavern](https://app.slack.com/client/T0266FRGM/D07HGJZG6HJ) and you will be on your way to fame and glory!
