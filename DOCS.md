@@ -1,17 +1,24 @@
 <!-- omit in toc -->
-
 # Documentation
 
--   [Getting Started](#getting-started)
--   [Development](#development)
-    -   [Database](#database)
-    -   [Templates](#templates)
-    -   [Logging System](#logging-system)
-        -   [Slog](#slog)
-        -   [Clog](#clog)
-        -   [Blog](#blog)
-    -   [Feature system](#feature-system)
--   [Contributing](#contributing)
+- [Getting Started](#getting-started)
+  - [Prerequisites](#prerequisites)
+  - [Installing](#installing)
+  - [Creating a Slack App](#creating-a-slack-app)
+  - [Running the Slackbot](#running-the-slackbot)
+- [Development](#development)
+  - [Database](#database)
+  - [Templates](#templates)
+    - [Template Example:](#template-example)
+    - [Date Interface Example:](#date-interface-example)
+    - [Template Type Example:](#template-type-example)
+  - [Logging System](#logging-system)
+    - [Slog](#slog)
+    - [Clog](#clog)
+    - [Blog](#blog)
+  - [Feature system](#feature-system)
+    - [Example:](#example)
+- [Contributing](#contributing)
 
 ## Getting Started
 
@@ -43,6 +50,17 @@ bun install
 3. Change the event url and the request url to the url of your server plus /slack
 4. Install the app to your workspace
 5. Copy the bot token and the signing secret to your environment variables under the names `SLACK_BOT_TOKEN` and `SLACK_SIGNING_SECRET` also add `NODE_ENV=development` to your environment variables and `ADMINS=your_slack_id` where `your_slack_id` is your slack id
+```bash
+SLACK_BOT_TOKEN=xoxb-xxxxxxx-xxxxxxx-xxxxxxxxxxxxx
+SLACK_SIGNING_SECRET=xxxxxxxxxxxxxxxxxxxxxxxxxxxx
+SLACK_LOG_CHANNEL=Cxxxxxxx
+NODE_ENV=development
+ADMINS=Uxxxxxxxx
+BOT_ID=Bxxxxxxxx
+OPENAI_API_KEY=sk-proj-xxxxxxxxxxxxxxxxxxxxx-x-xxxxxxxxxxxxxxxxxxxxxxxxx
+BAG_APP_ID=00
+BAG_APP_KEY=xxxxxxxx-xxxxx-xxxxx-xxxxx-xxxxxxxxxxxxx
+```
 
 ### Running the Slackbot
 
