@@ -91,12 +91,12 @@ I used [nest](https://guides.hackclub.app/index.php/Quickstart) to run my bot bu
 <p><img align="left" width="120" height="120" src="https://cloud-e3njarhaf-hack-club-bot.vercel.app/3baby.jpg">
 
 **Cubby:** A curious and innocent baby bear who quickly trusts the party. Often distracted by smells or sounds, Cubby communicates through gestures, growls, and babyish words like "Mama." The goal is to find Cubby's mother.</p>
-
 <br/>
 
 <p><img align="right" width="120" height="120" src="https://cloud-e3njarhaf-hack-club-bot.vercel.app/2mama.jpg">
 
 **Matilda**: A fierce and protective mother bear. Initially aggressive but calms down when she realizes the party is helping her cub. Speaks in a deep, gruff voice with simple, direct language. Her goal is to protect her cub.</p>
+<br/>
 
 <p><img align="left" width="120" height="120" src="https://cloud-e3njarhaf-hack-club-bot.vercel.app/0squirrel.jpg">
 
@@ -106,6 +106,7 @@ I used [nest](https://guides.hackclub.app/index.php/Quickstart) to run my bot bu
 <p><img align="right" width="120" height="120" src="https://cloud-91y9kizkb-hack-club-bot.vercel.app/0image.png">
 
 **Grumbles**: A reclusive and grumpy old hermit who lives deep in the forest. Wise and knowledgeable about the forest's history, Grumbles speaks in riddles and cryptic phrases. Prefers to be left alone but may help the party if they show respect for the forest.</p>
+<br/>
 
 <p><img align="left" width="120" height="120" src="https://cloud-e3njarhaf-hack-club-bot.vercel.app/1keeper.png">
 
