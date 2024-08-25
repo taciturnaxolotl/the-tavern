@@ -388,7 +388,7 @@ async function toolHandlerRecursive(
                     lockThread = true
                     messages.push({
                         role: 'tool',
-                        content: `gave user ${args.reward}`,
+                        content: `gave user ${quests[quest].items}`,
                         tool_call_id: toolCall.id,
                     })
                     try {
@@ -406,7 +406,7 @@ async function toolHandlerRecursive(
                             '>!' +
                             "'"
                         }`
-                        clog('gave user ' + args.reward, 'info')
+                        clog('gave user ' + quests[quest].items, 'info')
                     } catch (e) {
                         if (e instanceof Error) {
                             messages.push({
