@@ -272,7 +272,10 @@ async function toolWrapper(
         model: 'gpt-4o-mini',
         messages: messages,
         max_tokens: 500,
-        tools,
+        tools: getProperTools(
+            sceneID === 0,
+            sceneID === quests[quest].scenes.length - 1
+        ),
     })
 
     return toolHandlerRecursive(
@@ -423,7 +426,7 @@ async function toolHandlerRecursive(
         const newCompletion = await openAIClient.chat.completions.create({
             model: 'gpt-4o-mini',
             messages: messages,
-            tools,
+            tools: getProperTools(scene === 0, lockThread),
             max_tokens: 500,
         })
 
@@ -446,4 +449,15 @@ async function toolHandlerRecursive(
             lockThread,
         }
     }
+}
+
+function getProperTools(getQuest?: boolean, finished?: boolean) {
+    // filter out the reward tool if not finished if it is then just give reward tool
+    return tools.filter((tool) => {
+        if (tool.function.name == 'reward') return finished
+        if (tool.function.name == 'next_scene') return !finished
+        if (tool.function.name == 'choose_quest') return getQuest
+        if (tool.function.name == 'list_quests') return getQuest
+        return true
+    })
 }
