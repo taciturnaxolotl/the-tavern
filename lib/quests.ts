@@ -462,7 +462,7 @@ function getProperTools(
 ) {
     // filter out the reward tool if not finished if it is then just give reward tool
     return tools.filter((tool) => {
-        if (tool.function.name == 'reward') return rewardGiven || finished
+        if (tool.function.name == 'reward') return !rewardGiven || finished
         if (tool.function.name == 'next_scene') return !finished
         if (tool.function.name == 'choose_quest') return getQuest
         if (tool.function.name == 'list_quests') return getQuest
