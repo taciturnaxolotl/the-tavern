@@ -35,7 +35,19 @@ Just customize the prompts and characters, and The Tavern bot will auto source e
 
 ### Getting it up and running
 
-TODO
+The quick answer is to pull the repo make a slackbot with the [`manifest.yaml`](https://github.com/kcoderhtml/the-tavern/blob/master/manifest.yaml) thats in the root of this repo and then `bun i; bunx prisma generate; bunx prisma db push` to get the db and everything installed and ready to go! The last bit is pretty simple just `bun ngrok` and `bun dev`! A sample env file is below; for more details see [`DOCS.md`](https://github.com/kcoderhtml/the-tavern/blob/master/DOCS.md)
+
+```bash
+SLACK_BOT_TOKEN=xoxb-xxxxxxx-xxxxxxx-xxxxxxxxxxxxx
+SLACK_SIGNING_SECRET=xxxxxxxxxxxxxxxxxxxxxxxxxxxx
+SLACK_LOG_CHANNEL=Cxxxxxxx
+NODE_ENV=development
+ADMINS=Uxxxxxxxx
+BOT_ID=Bxxxxxxxx
+OPENAI_API_KEY=sk-proj-xxxxxxxxxxxxxxxxxxxxx-x-xxxxxxxxxxxxxxxxxxxxxxxxx
+BAG_APP_ID=00
+BAG_APP_KEY=xxxxxxxx-xxxxx-xxxxx-xxxxx-xxxxxxxxxxxxx
+```
 
 ### Editing Quests
 
