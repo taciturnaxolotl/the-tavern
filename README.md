@@ -2,6 +2,8 @@
 
 Welcome to The Tavern, your friendly quest bot! I run in the bag channels in Hackclub's [#market](https://app.slack.com/client/T0266FRGM/C06GA0PSXC5) channel! Just ping [@The Tavern](https://app.slack.com/client/T0266FRGM/D07HGJZG6HJ) and you will be on your way to fame and glory!
 
+![the startup sequence](https://github.com/kcoderhtml/the-tavern/raw/master/.github/images/cli.png)
+
 ## Creating New Quests
 
 You can easily create new quests by editing the YAML file `/lib/quests.yaml`. Here’s a simple example of how a quest might look:
